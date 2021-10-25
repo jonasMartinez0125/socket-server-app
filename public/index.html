@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiniChat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" integrity="sha512-GQGU0fMMi238uA+a/bdWJfpUGKUkBdgfFdgBm72SUQ6BeyWjoY/ton0tEjH+OSH9iP4Dfh+7HM0I9f5eR0L/4w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body class="container">
+    <h1 class="mt-5">Minichat</h1>
+    <hr>
+
+    <form id="my-form">
+        <div class="row">
+            <div class="col-8">
+                <input type="text" id="text-message" class="form-control">
+            </div>
+            <div class="col-4">
+                <button class="btn btn-primary">
+                    Enviar
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <div class="row">
+        <div class="col">
+            <ul id="my-messages" class="mt-2">
+            </ul>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js" integrity="sha512-Y5MDU6RaF5h5HE5BgqJlKkV12kbkbIgWHutcT+XHHNOUzr+HHjWZGC02sqEguuPglmFms3cc08WH2PhQ5rF8Cw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        const socket = io('http://localhost:8080');
+
+        // referencias a los elementos de DOM
+        const form = document.querySelector('#my-form');
+        const txtMessage = document.querySelector('#text-message');
+        const messages = document.querySelector('#my-messages');
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const newMessage = txtMessage.value;
+
+            socket.emit('message-to-server',  {
+                text: newMessage,
+            });
+        });
+
+        socket.on('message-from-server', data => {
+            messages.innerHTML += `<li>${ data.text }</li>`;
+        });
+    </script>
+</body>
+</html>
